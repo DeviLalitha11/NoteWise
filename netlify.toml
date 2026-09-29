@@ -1,0 +1,28 @@
+# Netlify reads this file automatically, so no build settings need to be typed in the UI.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 needs Node 20.19+ or 22.12+.
+  NODE_VERSION = "22"
+
+# The service worker must always be re-checked, or students could be stuck on an old version.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Built JS/CSS files have a content hash in their name, so they can be cached forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Camera is used by "Scan a page"; nothing else is needed.
+    Permissions-Policy = "camera=(self), microphone=(), geolocation=()"
